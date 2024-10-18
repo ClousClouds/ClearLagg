@@ -1,10 +1,14 @@
 --- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/XPocketMC/ClearLagg
 build-by-default: true
 branches:
-- main
+- stable
 - 1.1.0
+- main
 projects: 
   ClearLagg:
     path: ""
-    icon: "https://i.ibb.co.com/gW2N2Hz/OIG1-removebg-preview.png"
+    libs:
+      - src: NurAzli/UpdateNotifications/UpdateNotifications
+        version: ^1.0.0
+    icon: "OIG1-removebg-preview.png"
 ...

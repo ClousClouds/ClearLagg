@@ -1,4 +1,4 @@
-name: Build ClearLagg Plugin and Create Release
+name: Build and Test ClearLagg Plugin
 
 on:
   push:
@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -57,3 +58,67 @@ jobs:
           files: builds/ClearLagg.phar
           draft: false
           prerelease: false
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1' # Use PHP 8.1 or other versions supported by PocketMine-MP
+        extensions: mbstring, yaml
+
+    - name: Download PocketMine-MP
+      run: |
+        curl -sL https://get.pmmp.io | bash -s - -r
+
+    - name: Install dependencies
+      run: composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-chunkutils2 --ignore-platform-req=ext-crypto --ignore-platform-req=ext-leveldb --ignore-platform-req=ext-morton --ignore-platform-req=ext-pmmpthread
+
+    - name: Copy plugin source
+      run: |
+        mkdir -p plugins/ClearLagg/src
+        cp -r src plugins/ClearLagg/src
+        cp plugin.yml plugins/ClearLagg/plugin.yml
+        cp -r resources plugins/ClearLagg/resources
+
+    - name: Compile plugin to .phar
+      run: ./bin/php7/bin/php PocketMine-MP.phar --makeplugin ClearLagg
+
+    - name: Move compiled .phar
+      run: mv ClearLagg.phar plugins/ClearLagg.phar
+
+    - name: Run PocketMine-MP
+      run: ./bin/php7/bin/php PocketMine-MP.phar --no-wizard --disable-ansi
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0'
+        extensions: mbstring, yaml
+
+    - name: Download PocketMine-MP
+      run: |
+        curl -sL https://get.pmmp.io | bash -s - -r
+
+    - name: Install dependencies
+      run: composer install
+
+    - name: Copy plugin source
+      run: |
+        mkdir -p plugins/ClearLagg/src
+        cp -r src plugins/ClearLagg/src
+        cp plugin.yml plugins/ClearLagg/plugin.yml
+        cp -r resources plugins/ClearLagg/resources
+
+    - name: Run PocketMine-MP with ClearLagg
+      run: ./bin/php7/bin/php PocketMine-MP.phar --no-wizard --disable-ansi
+
