@@ -49,8 +49,7 @@ This file part of
 @license GPL-3.0
 @author KnosTx
 @link https://github.com/KnosTx/ClearLagg
-©Copyright 2024 KnosTx
-               
+Copyright is protected by the Law of the country.
 
 BODY,
             'location' => 'after_open'
