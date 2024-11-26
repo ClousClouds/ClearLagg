@@ -10,9 +10,6 @@
  * @license GPL-3.0
  * @author KnosTx
  * @link https://github.com/KnosTx/ClearLagg
- * ©Copyright 2024 KnosTx
- *
- *
  */
 
 declare(strict_types=1);
@@ -25,63 +22,96 @@ use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
 use function str_replace;
 
+/**
+ * Manages the ClearLagg plugin's main functionality, including automatic item clearing and player notifications.
+ */
 class ClearLaggManager{
 
-	private $plugin;
-	private $clearInterval;
-	private $clearMessage;
-	private $warningMessage;
-	private $broadcastInterval;
-	private $broadcastMessage;
-	private $timeRemaining;
+    /** @var Main Plugin instance. */
+    private $plugin;
 
-	public function __construct(Main $plugin){
-		$this->plugin = $plugin;
-	}
+    /** @var int Interval in seconds between automatic clears. */
+    private $clearInterval;
 
-	public function init() : void{
-		$config = $this->plugin->getConfig();
-		$this->clearInterval = $config->get("clear-interval", 300);
-		$this->clearMessage = $config->get("clear-message", "§aGarbage collected correctly.");
-		$this->warningMessage = $config->get("warning-message", "§cPicking up trash in{time}...");
-		$this->broadcastInterval = $config->get("broadcast-interval", 15);
-		$this->broadcastMessage = $config->get("broadcast-message", "§bThe items will be deleted in{time} seconds.");
-		$this->timeRemaining = $config->getNested("notify-players.countdown", 299);
+    /** @var string Message sent to players when items are cleared. */
+    private $clearMessage;
 
-		$this->plugin->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void{
-			$this->onTick();
-		}), 20);
+    /** @var string Warning message sent before items are cleared. */
+    private $warningMessage;
 
-		$this->plugin->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void{
-			$this->broadcastTime();
-		}), $this->broadcastInterval * 20);
-	}
+    /** @var int Interval in seconds between broadcasts to notify players. */
+    private $broadcastInterval;
 
-	private function onTick() : void{
-		if ($this->timeRemaining <= 5 && $this->timeRemaining > 0){
-			Server::getInstance()->broadcastMessage(str_replace("{time}", (string) $this->timeRemaining, $this->warningMessage));
-		}
+    /** @var string Broadcast message to notify players of remaining time. */
+    private $broadcastMessage;
 
-		if ($this->timeRemaining <= 0){
-			$this->clearItems();
-			$this->timeRemaining = $this->clearInterval;
-		} else{
-			$this->timeRemaining--;
-		}
-	}
+    /** @var int Time remaining until the next item clear. */
+    private $timeRemaining;
 
-	public function clearItems() : void{
-		foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world){
-			foreach ($world->getEntities() as $entity){
-				if ($entity instanceof ItemEntity){
-					$entity->flagForDespawn();
-				}
-			}
-		}
-		Server::getInstance()->broadcastMessage($this->clearMessage);
-	}
+    /**
+     * Constructs a new ClearLaggManager instance.
+     *
+     * @param Main $plugin The main plugin instance.
+     */
+    public function __construct(Main $plugin){
+        $this->plugin = $plugin;
+    }
 
-	private function broadcastTime() : void{
-		Server::getInstance()->broadcastMessage(str_replace("{time}", (string) $this->timeRemaining, $this->broadcastMessage));
-	}
+    /**
+     * Initializes the ClearLaggManager by loading configuration and scheduling tasks.
+     */
+    public function init() : void{
+        $config = $this->plugin->getConfig();
+        $this->clearInterval = $config->get("clear-interval", 300);
+        $this->clearMessage = $config->get("clear-message", "§aGarbage collected correctly.");
+        $this->warningMessage = $config->get("warning-message", "§cPicking up trash in{time}...");
+        $this->broadcastInterval = $config->get("broadcast-interval", 15);
+        $this->broadcastMessage = $config->get("broadcast-message", "§bThe items will be deleted in{time} seconds.");
+        $this->timeRemaining = $config->getNested("notify-players.countdown", 299);
+
+        $this->plugin->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void{
+            $this->onTick();
+        }), 20);
+
+        $this->plugin->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void{
+            $this->broadcastTime();
+        }), $this->broadcastInterval * 20);
+    }
+
+    /**
+     * Handles logic for each tick, including decrementing the countdown and sending warnings.
+     */
+    private function onTick() : void{
+        if ($this->timeRemaining <= 5 && $this->timeRemaining > 0){
+            Server::getInstance()->broadcastMessage(str_replace("{time}", (string) $this->timeRemaining, $this->warningMessage));
+        }
+
+        if ($this->timeRemaining <= 0){
+            $this->clearItems();
+            $this->timeRemaining = $this->clearInterval;
+        } else {
+            $this->timeRemaining--;
+        }
+    }
+
+    /**
+     * Clears all dropped items (ItemEntity) from all worlds.
+     */
+    public function clearItems() : void{
+        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world){
+            foreach ($world->getEntities() as $entity){
+                if ($entity instanceof ItemEntity){
+                    $entity->flagForDespawn();
+                }
+            }
+        }
+        Server::getInstance()->broadcastMessage($this->clearMessage);
+    }
+
+    /**
+     * Broadcasts the remaining time to all players.
+     */
+    private function broadcastTime() : void{
+        Server::getInstance()->broadcastMessage(str_replace("{time}", (string) $this->timeRemaining, $this->broadcastMessage));
+    }
 }
