@@ -40,7 +40,7 @@ return (new PhpCsFixer\Config)
         'header_comment' => [
             'comment_type' => 'comment',
             'header' => <<<BODY
-This file part of
+This file is part of
    ___ _              _                   
   / __| |___ __ _ _ _| |   __ _ __ _ __ _ 
  | (__| / -_) _` | '_| |__/ _` / _` / _` |
