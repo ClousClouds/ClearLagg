@@ -10,9 +10,6 @@
  * @license GPL-3.0
  * @author KnosTx
  * @link https://github.com/KnosTx/ClearLagg
- * ©Copyright 2024 KnosTx
- *
- *
  */
 
 declare(strict_types=1);
@@ -23,30 +20,46 @@ use KnosTx\ClearLagg\Main;
 use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 
-class StatsCommand{
+/**
+ * Handles the /clearlagg stats command to show server statistics.
+ */
+class StatsCommand {
 
-	private $plugin;
+    /** @var Main The main plugin instance. */
+    private $plugin;
 
-	public function __construct(Main $plugin){
-		$this->plugin = $plugin;
-	}
+    /**
+     * StatsCommand constructor.
+     * 
+     * @param Main $plugin The main plugin instance.
+     */
+    public function __construct(Main $plugin){
+        $this->plugin = $plugin;
+    }
 
-	public function execute(CommandSender $sender) : bool{
-		try{
-			$statsManager = $this->plugin->getStatsManager();
-			if ($statsManager === null){
-				$sender->sendMessage(TextFormat::RED . "Stats manager is not initialized.");
-				return false;
-			}
+    /**
+     * Executes the /clearlagg stats command.
+     *
+     * @param CommandSender $sender The sender of the command.
+     * @return bool Returns true if the command was successfully executed, false otherwise.
+     */
+    public function execute(CommandSender $sender) : bool {
+        try {
+            $statsManager = $this->plugin->getStatsManager();
+            
+            if ($statsManager === null){
+                $sender->sendMessage(TextFormat::RED . "Stats manager is not initialized.");
+                return false;
+            }
 
-			$itemsCleared = $statsManager->getItemsCleared();
-			$sender->sendMessage(TextFormat::GREEN . "Total items cleared: " . TextFormat::YELLOW . $itemsCleared);
-		} catch (\Exception $e){
-			$sender->sendMessage(TextFormat::RED . "An error occurred: " . $e->getMessage());
-			$this->plugin->getLogger()->error("Error in StatsCommand: " . $e->getMessage(), $e);
-			return false;
-		}
+            $itemsCleared = $statsManager->getItemsCleared();
+            $sender->sendMessage(TextFormat::GREEN . "Total items cleared: " . TextFormat::YELLOW . $itemsCleared);
+        } catch (\Exception $e) {
+            $sender->sendMessage(TextFormat::RED . "An error occurred: " . $e->getMessage());
+            $this->plugin->getLogger()->error("Error in StatsCommand: " . $e->getMessage(), $e);
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 }
