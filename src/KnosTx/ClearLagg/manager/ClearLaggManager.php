@@ -89,7 +89,7 @@ class ClearLaggManager{
         if ($this->timeRemaining <= 0){
             $this->clearItems();
             $this->timeRemaining = $this->clearInterval;
-        } else {
+        } else{
             $this->timeRemaining--;
         }
     }

@@ -23,7 +23,7 @@ use pocketmine\utils\TextFormat;
 /**
  * Handles the /clearlagg stats command to show server statistics.
  */
-class StatsCommand {
+class StatsCommand{
 
     /** @var Main The main plugin instance. */
     private $plugin;
@@ -43,8 +43,8 @@ class StatsCommand {
      * @param CommandSender $sender The sender of the command.
      * @return bool Returns true if the command was successfully executed, false otherwise.
      */
-    public function execute(CommandSender $sender) : bool {
-        try {
+    public function execute(CommandSender $sender) : bool{
+        try{
             $statsManager = $this->plugin->getStatsManager();
             
             if ($statsManager === null){
@@ -54,7 +54,7 @@ class StatsCommand {
 
             $itemsCleared = $statsManager->getItemsCleared();
             $sender->sendMessage(TextFormat::GREEN . "Total items cleared: " . TextFormat::YELLOW . $itemsCleared);
-        } catch (\Exception $e) {
+        } catch (\Exception $e){
             $sender->sendMessage(TextFormat::RED . "An error occurred: " . $e->getMessage());
             $this->plugin->getLogger()->error("Error in StatsCommand: " . $e->getMessage(), $e);
             return false;
