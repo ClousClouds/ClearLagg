@@ -4,7 +4,7 @@
  * This file part of
  *    ___ _              _
  *   / __| |___ __ _ _ _| |   __ _ __ _ __ _
- *  | (__| / -_) _` | '_| |__/ _` / _` / _` |
+ *  |(__| / -_) _` | '_| |__/ _` / _` / _` |
  *   \___|_\___\__,_|_| |____\__,_\__, \__, |
  *                                |___/|___/
  * @license GPL-3.0
@@ -66,7 +66,7 @@ class ClearLaggManager{
         $this->clearMessage = $config->get("clear-message", "§aGarbage collected correctly.");
         $this->warningMessage = $config->get("warning-message", "§cPicking up trash in{time}...");
         $this->broadcastInterval = $config->get("broadcast-interval", 15);
-        $this->broadcastMessage = $config->get("broadcast-message", "§bThe items will be deleted in{time} seconds.");
+        $this->broadcastMessage = $config->get("broadcast-message", "§bThe items will be deleted in {time} seconds.");
         $this->timeRemaining = $config->getNested("notify-players.countdown", 299);
 
         $this->plugin->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void{
@@ -82,25 +82,25 @@ class ClearLaggManager{
      * Handles logic for each tick, including decrementing the countdown and sending warnings.
      */
     private function onTick() : void{
-        if ($this->timeRemaining <= 5 && $this->timeRemaining > 0){
-            Server::getInstance()->broadcastMessage(str_replace("{time}", (string) $this->timeRemaining, $this->warningMessage));
+        if($this->timeRemaining <= 5 && $this->timeRemaining > 0){
+            Server::getInstance()->broadcastMessage(str_replace("{time}",(string) $this->timeRemaining, $this->warningMessage));
         }
 
-        if ($this->timeRemaining <= 0){
+        if($this->timeRemaining <= 0){
             $this->clearItems();
             $this->timeRemaining = $this->clearInterval;
-        } else{
+        }else{
             $this->timeRemaining--;
         }
     }
 
     /**
-     * Clears all dropped items (ItemEntity) from all worlds.
+     * Clears all dropped items(ItemEntity) from all worlds.
      */
     public function clearItems() : void{
-        foreach (Server::getInstance()->getWorldManager()->getWorlds() as $world){
-            foreach ($world->getEntities() as $entity){
-                if ($entity instanceof ItemEntity){
+        foreach(Server::getInstance()->getWorldManager()->getWorlds() as $world){
+            foreach($world->getEntities() as $entity){
+                if($entity instanceof ItemEntity){
                     $entity->flagForDespawn();
                 }
             }
@@ -112,6 +112,6 @@ class ClearLaggManager{
      * Broadcasts the remaining time to all players.
      */
     private function broadcastTime() : void{
-        Server::getInstance()->broadcastMessage(str_replace("{time}", (string) $this->timeRemaining, $this->broadcastMessage));
+        Server::getInstance()->broadcastMessage(str_replace("{time}",(string) $this->timeRemaining, $this->broadcastMessage));
     }
 }

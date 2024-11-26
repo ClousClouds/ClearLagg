@@ -4,7 +4,7 @@
  * This file part of
  *    ___ _              _
  *   / __| |___ __ _ _ _| |   __ _ __ _ __ _
- *  | (__| / -_) _` | '_| |__/ _` / _` / _` |
+ *  |(__| / -_) _` | '_| |__/ _` / _` / _` |
  *   \___|_\___\__,_|_| |____\__,_\__, \__, |
  *                                |___/|___/
  * @license GPL-3.0
@@ -49,7 +49,7 @@ class StatsManager{
         
         // Count the total number of entities across all worlds
         $entityCount = 0;
-        foreach ($this->plugin->getServer()->getWorldManager()->getWorlds() as $world){
+        foreach($this->plugin->getServer()->getWorldManager()->getWorlds() as $world){
             $entityCount += count($world->getEntities());
         }
 

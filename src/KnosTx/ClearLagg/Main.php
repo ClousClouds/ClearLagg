@@ -4,7 +4,7 @@
  * This file is part of
  *    ___ _              _
  *   / __| |___ __ _ _ _| |   __ _ __ _ __ _
- *  | (__| / -_) _` | '_| |__/ _` / _` / _` |
+ *  |(__| / -_) _` | '_| |__/ _` / _` / _` |
  *   \___|_\___\__,_|_| |____\__,_\__, \__, |
  *                                |___/|___/
  * @license GPL-3.0
@@ -78,10 +78,10 @@ class Main extends PluginBase{
      * Cancels all running tasks.
      */
     public function onDisable() : void{
-        if ($this->clearTaskHandler instanceof TaskHandler){
+        if($this->clearTaskHandler instanceof TaskHandler){
             $this->clearTaskHandler->cancel();
         }
-        if ($this->broadcastTaskHandler instanceof TaskHandler){
+        if($this->broadcastTaskHandler instanceof TaskHandler){
             $this->broadcastTaskHandler->cancel();
         }
     }
@@ -114,10 +114,10 @@ class Main extends PluginBase{
      * @return bool True if the command was handled, false otherwise.
      */
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
-        if (strtolower($command->getName()) === "clearlagg"){
-            if (count($args) > 0 && strtolower($args[0]) === "stats"){
-                (new StatsCommand($this))->execute($sender);
-            } else{
+        if(strtolower($command->getName()) === "clearlagg"){
+            if(count($args) > 0 && strtolower($args[0]) === "stats"){
+               (new StatsCommand($this))->execute($sender);
+            }else{
                 $this->clearLaggManager->clearItems();
                 $sender->sendMessage(TextFormat::GREEN . "Items cleared!");
             }
@@ -132,15 +132,15 @@ class Main extends PluginBase{
      * Handles automatic item clearing and broadcasting warnings.
      */
     private function onTick() : void{
-        if ($this->timeRemaining <= 5 && $this->timeRemaining > 0){
+        if($this->timeRemaining <= 5 && $this->timeRemaining > 0){
             $this->getServer()->broadcastMessage($this->clearLaggManager->getWarningMessage($this->timeRemaining));
         }
 
-        if ($this->timeRemaining <= 0){
+        if($this->timeRemaining <= 0){
             $this->clearLaggManager->clearItems();
             $this->statsManager->incrementItemsCleared();
             $this->timeRemaining = $this->getConfig()->get("auto-clear-interval", 300);
-        } else{
+        }else{
             $this->timeRemaining--;
         }
     }
@@ -149,6 +149,6 @@ class Main extends PluginBase{
      * Broadcasts the remaining time to all players on the server.
      */
     private function broadcastTime() : void{
-        $this->getServer()->broadcastMessage(str_replace("{time}", (string) $this->timeRemaining, $this->getConfig()->get("broadcast-message", "§bThe items will be deleted in{time} seconds.")));
+        $this->getServer()->broadcastMessage(str_replace("{time}",(string) $this->timeRemaining, $this->getConfig()->get("broadcast-message", "§bThe items will be deleted in {time} seconds.")));
     }
 }

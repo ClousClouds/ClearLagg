@@ -4,7 +4,7 @@
  * This file part of
  *    ___ _              _
  *   / __| |___ __ _ _ _| |   __ _ __ _ __ _
- *  | (__| / -_) _` | '_| |__/ _` / _` / _` |
+ *  |(__| / -_) _` | '_| |__/ _` / _` / _` |
  *   \___|_\___\__,_|_| |____\__,_\__, \__, |
  *                                |___/|___/
  * @license GPL-3.0
@@ -54,22 +54,22 @@ class ClearLaggCommand extends Command implements PluginOwned{
      */
     public function execute(CommandSender $sender, string $commandLabel, array $args) : bool{
         // Check if the sender has permission to use the command
-        if (!$this->testPermission($sender)){
+        if(!$this->testPermission($sender)){
             $sender->sendMessage("You don't have permission to use this command.");
             return false;
         }
 
         try{
             // Handle stats command
-            if (isset($args[0]) && $args[0] === "stats"){
+            if(isset($args[0]) && $args[0] === "stats"){
                 $statsCommand = new StatsCommand($this->plugin);
                 return $statsCommand->execute($sender);
-            } else{
+            }else{
                 // Clear items if no stats argument is provided
                 $this->plugin->getClearLaggManager()->clearItems();
                 $sender->sendMessage("Items cleared successfully.");
             }
-        } catch (\Exception $e){
+        }catch(\Exception $e){
             // Catch and log any exceptions that occur
             $sender->sendMessage("An error occurred: " . $e->getMessage());
             $this->plugin->getLogger()->error("Error in ClearLaggCommand: " . $e->getMessage(), $e);

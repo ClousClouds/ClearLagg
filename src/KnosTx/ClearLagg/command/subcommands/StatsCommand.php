@@ -4,7 +4,7 @@
  * This file part of
  *    ___ _              _
  *   / __| |___ __ _ _ _| |   __ _ __ _ __ _
- *  | (__| / -_) _` | '_| |__/ _` / _` / _` |
+ *  |(__| / -_) _` | '_| |__/ _` / _` / _` |
  *   \___|_\___\__,_|_| |____\__,_\__, \__, |
  *                                |___/|___/
  * @license GPL-3.0
@@ -47,14 +47,14 @@ class StatsCommand{
         try{
             $statsManager = $this->plugin->getStatsManager();
             
-            if ($statsManager === null){
+            if($statsManager === null){
                 $sender->sendMessage(TextFormat::RED . "Stats manager is not initialized.");
                 return false;
             }
 
             $itemsCleared = $statsManager->getItemsCleared();
             $sender->sendMessage(TextFormat::GREEN . "Total items cleared: " . TextFormat::YELLOW . $itemsCleared);
-        } catch (\Exception $e){
+        }catch(\Exception $e){
             $sender->sendMessage(TextFormat::RED . "An error occurred: " . $e->getMessage());
             $this->plugin->getLogger()->error("Error in StatsCommand: " . $e->getMessage(), $e);
             return false;
