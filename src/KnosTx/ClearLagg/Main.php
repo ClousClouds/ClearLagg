@@ -42,8 +42,7 @@ class Main extends PluginBase
 		$this->clearLaggManager = new ClearLaggManager($this);
 		$this->statsManager = new StatsManager($this);
 
-		$this->timeRemaining = $this->getConfig()->get("auto-clear-interval", 300);
-
+		$this->timeRemaining = $this->getConfig()->get("clear-interval", 300);
 		$this->clearTaskHandler = $this->getScheduler()->scheduleRepeatingTask(new ClosureTask(
 			function() : void{
 				$this->onTick();
@@ -64,6 +63,19 @@ class Main extends PluginBase
 		}
 		if($this->broadcastTaskHandler !== null){
 			$this->broadcastTaskHandler->cancel();
+		}
+	}
+
+	private function notifyPlayers() : void{
+		if($this->getConfig()->getNested("notify-players.enable", true)) {
+			$countdown = $this->getConfig()->getNested("notify-players.countdown", 299);
+			if($this->timeRemaining == $countdown || 
+			   ($this->timeRemaining <= $countdown && $this->timeRemaining % 60 == 0) ||
+			   $this->timeRemaining <= 10) {
+				$message = $this->getConfig()->getNested("notify-players.message", "All dropped items will be cleared in {time} seconds!");
+				$formattedMessage = str_replace("{time}", (string)$this->timeRemaining, $message);
+				$this->getServer()->broadcastMessage($formattedMessage);
+			}
 		}
 	}
 
@@ -107,6 +119,7 @@ class Main extends PluginBase
 	 * Handles the auto-clear tick countdown and execution.
 	 */
 	private function onTick() : void{
+		$this->notifyPlayers();
 		if($this->timeRemaining <= 0){
 			$this->clearLaggManager->clearItems();
 			$this->statsManager->incrementItemsCleared();
