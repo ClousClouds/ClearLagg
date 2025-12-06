@@ -36,13 +36,13 @@ class ScoreHudListener implements Listener{
 		$statsManager = $this->plugin->getStatsManager();
 
 		switch($tag->getName()){
-			case "clearlagg.total_items_cleared":
-				$itemsCleared = $statsManager->getTotalItemsCleared();
+			case "clearlagg.items_cleared":
+				$itemsCleared = $statsManager->getItemsCleared();
 				$tag->setValue((string) $itemsCleared);
 				break;
 
 			case "clearlagg.next_clear":
-				$timeRemaining = $this->plugin->getTimeRemaining();
+				$timeRemaining = $clearLaggManager->getTimeRemaining();
 				$tag->setValue((string) $timeRemaining);
 				break;
 
