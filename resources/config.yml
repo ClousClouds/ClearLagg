@@ -1,29 +1,18 @@
 # ClearLagg configuration file
 
-# Please Don't Edit configuration version
-config-version: 4
-
-# Time in seconds between automatic clears
+config-version: 5
 clear-interval: 300
-
-# Time interval in seconds for countdown message broadcast
 broadcast-interval: 15
+update-notify: true
 
-# World-specific settings
 worlds:
   world:
     enable-auto-clear: true
-#  world_nether:
-#    enable-auto-clear: true
-#  world_the_end:
-#    enable-auto-clear: true
 
-# Player notifications
 notify-players:
   enable: true
   message: "All dropped items will be cleared in 299 seconds!"
   countdown: 299
 
-# Messages
 clear-message: "§aItems cleared!"
 broadcast-message: "§bThe items will be deleted in {time} seconds."

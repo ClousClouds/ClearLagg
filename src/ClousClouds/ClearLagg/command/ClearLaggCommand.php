@@ -8,18 +8,18 @@
  *   \___|_\___\__,_|_| |____\__,_\__, \__, |
  *                                |___/|___/
  * @license GPL-3.0
- * @author KnosTx
- * @link https://github.com/KnosTx/ClearLagg
+ * @author ClousClouds
+ * @link https://github.com/ClousClouds/ClearLagg
  * Copyright is protected by the Law of the country.
  *
  */
 
 declare(strict_types=1);
 
-namespace KnosTx\ClearLagg\command;
+namespace ClousClouds\ClearLagg\command;
 
-use KnosTx\ClearLagg\command\subcommands\StatsCommand;
-use KnosTx\ClearLagg\Main;
+use ClousClouds\ClearLagg\command\subcommands\StatsCommand;
+use ClousClouds\ClearLagg\Main;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\PluginOwned;

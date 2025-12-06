@@ -8,17 +8,17 @@
  *   \___|_\___\__,_|_| |____\__,_\__, \__, |
  *                                |___/|___/
  * @license GPL-3.0
- * @author KnosTx
- * @link https://github.com/KnosTx/ClearLagg
+ * @author ClousClouds
+ * @link https://github.com/ClousClouds/ClearLagg
  * Copyright is protected by the Law of the country.
  *
  */
 
 declare(strict_types=1);
 
-namespace KnosTx\ClearLagg\manager;
+namespace ClousClouds\ClearLagg\manager;
 
-use KnosTx\ClearLagg\Main;
+use ClousClouds\ClearLagg\Main;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
@@ -41,10 +41,6 @@ class ClearLaggManager{
 		$config = $this->plugin->getConfig();
 		$this->clearInterval = $config->get("clear-interval", 300);
 		$this->clearMessage = $config->get("clear-message", "§aItems cleared!");
-
-		if($this->clearMessage === null || $this->clearMessage === "") {
-			$this->clearMessage = "§aItems cleared!";
-		}
 
 		$this->broadcastInterval = $config->get("broadcast-interval", 150);
 		$this->broadcastMessage = $config->get("broadcast-message", "§bThe items will be deleted in {time} seconds.");
@@ -79,6 +75,9 @@ class ClearLaggManager{
 			}
 		}
 		Server::getInstance()->broadcastMessage($this->clearMessage);
+	}
+	public function getTimeRemaining() : int{
+		return $this->timeRemaining;
 	}
 
 	private function broadcastTime() : void{
