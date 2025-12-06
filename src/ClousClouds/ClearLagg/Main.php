@@ -4,7 +4,7 @@
  * This file is part of ClearLagg
  *    ___ _              _
  *   / __| |___ __ _ _ _| |   __ _ __ _ __ _
- *  | (__| / -_) _` | '_| |__/ _` / _` / _` |
+ *  |(__| / -_) _` | '_| |__/ _` / _` / _` |
  *   \___|_\___\__,_|_| |____\__,_\__, \__, |
  *                                 |___/|___/
  *
@@ -23,17 +23,11 @@ use ClousClouds\ClearLagg\manager\StatsManager;
 use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\TaskHandler;
 use function class_exists;
-use function file_get_contents;
-use function json_decode;
-use function stream_context_create;
-use function version_compare;
 
 class Main extends PluginBase{
 
 	private ClearLaggManager $clearLaggManager;
 	private StatsManager $statsManager;
-	private ?TaskHandler $clearTaskHandler = null;
-	private ?TaskHandler $broadcastTaskHandler = null;
 
 	public function onEnable() : void{
 		$this->saveDefaultConfig();
@@ -54,14 +48,14 @@ class Main extends PluginBase{
 
 	private function checkUpdate() : void{
 		$currentVersion = $this->getDescription()->getVersion();
-
+    
 		$this->getServer()->getAsyncPool()->submitTask(new class($currentVersion) extends \pocketmine\scheduler\AsyncTask{
 			private string $currentVersion;
-
+        
 			public function __construct(string $currentVersion){
 				$this->currentVersion = $currentVersion;
 			}
-
+        
 			public function onRun() : void{
 				$url = "https://poggit.pmmp.io/releases.json?name=ClearLagg";
 				$response = @file_get_contents($url, false, stream_context_create([
