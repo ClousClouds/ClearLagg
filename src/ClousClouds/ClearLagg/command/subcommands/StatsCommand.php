@@ -1,17 +1,17 @@
 <?php
 
 /*
- * This file is part of
+ * This file is part of ClearLagg
  *    ___ _              _
  *   / __| |___ __ _ _ _| |   __ _ __ _ __ _
  *  | (__| / -_) _` | '_| |__/ _` / _` / _` |
  *   \___|_\___\__,_|_| |____\__,_\__, \__, |
- *                                |___/|___/
- * @license GPL-3.0
- * @author ClousClouds
- * @link https://github.com/ClousClouds/ClearLagg
- * Copyright is protected by the Law of the country.
+ *                                 |___/|___/
  *
+ * ClearLagg - A lag-reduction tool for PocketMine-MP.
+ * @license GPL-3.0
+ * @copyright ClousClouds
+ * @link https://github.com/ClousClouds/ClearLagg
  */
 
 declare(strict_types=1);
