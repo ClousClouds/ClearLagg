@@ -114,10 +114,10 @@ class Main extends PluginBase{
 						$server->getLogger()->info("§e[ClearLagg] New version available: §f" . $latestVersion . "§e (Current: §f" . $currentVersion . "§e)");
 						$server->getLogger()->info("§eDownload: §f" . ($result['url'] ?? "https://poggit.pmmp.io/p/ClousClouds/ClearLagg"));
 					}else{
-						$server->getLogger()->info("§7[ClearLagg] Plugin is up to date.")
+						$server->getLogger()->info("§7[ClearLagg] Plugin is up to date.");
 					}
 				}else{
-					$server->getLogger()->info("§7[ClearLagg] Could not fetch update data.")
+					$server->getLogger()->info("§7[ClearLagg] Could not fetch update data.");
 				}
 			}
 		});
