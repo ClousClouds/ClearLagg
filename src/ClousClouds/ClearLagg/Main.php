@@ -61,7 +61,7 @@ class Main extends PluginBase{
 			}
 
 			public function onRun() : void{
-				$url = "https://poggit.pmmp.io/releases.json?name=ClearLagg";
+				$url = "https://poggit.pmmp.io/releases.json?name=ClearLagg&latest-only";
 				$response = @file_get_contents($url, false, stream_context_create([
 					'http' => [
 						'timeout' => 5,
