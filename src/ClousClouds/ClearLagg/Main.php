@@ -75,29 +75,20 @@ class Main extends PluginBase{
 
 				if($response !== false){
 					$releases = json_decode($response, true);
-					if(is_array($releases) && count($releases) > 0){
-						$latestRelease = null;
-						foreach($releases as $release){
-							if(($release['is_obsolete'] ?? false) || ($release['is_pre_release'] ?? false)){
-								continue;
-							}
-							if($latestRelease === null || version_compare($release['version'], $latestRelease['version'], '>')){
-								$latestRelease = $release;
-							}
-						}
+					if(is_array($releases) && count($releases) > 0 && isset($releases[0]['version'])) {
+						$latestRelease = $releases[0];
 
-						if($latestRelease === null && !empty($releases[0])){
-							$latestRelease = $releases[0];
-						}
+						$isObsolete = $latestRelease['is_obsolete'] ?? false;
+						$isPreRelease = $latestRelease['is_pre_release'] ?? false;
 
-						if($latestRelease !== null && isset($latestRelease['version'])){
+						if(!$isObsolete && !$isPreRelease) {
 							$this->setResult([
 								'success' => true,
 								'latest' => $latestRelease['version'],
 								'current' => $this->currentVersion,
-								'url' => $latestRelease['html_url'] ?? "https://poggit.pmmp.io/p/ClearLagg"
+								'url' => $latestRelease['html_url'] ?? "https://poggit.pmmp.io/p/ClousClouds/ClearLagg"
 							]);
-							return;
+						return;
 						}
 					}
 				}
