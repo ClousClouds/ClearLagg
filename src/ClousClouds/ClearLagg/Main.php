@@ -23,6 +23,7 @@ use ClousClouds\ClearLagg\manager\ClearLaggManager;
 use ClousClouds\ClearLagg\manager\StatsManager;
 use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\TaskHandler;
+use pocketmine\Server;
 use function class_exists;
 
 class Main extends PluginBase{
@@ -51,58 +52,77 @@ class Main extends PluginBase{
 
 	private function checkUpdate() : void{
 		$currentVersion = $this->getDescription()->getVersion();
-    
+
 		$this->getServer()->getAsyncPool()->submitTask(new class($currentVersion) extends \pocketmine\scheduler\AsyncTask{
 			private string $currentVersion;
-        
+
 			public function __construct(string $currentVersion){
 				$this->currentVersion = $currentVersion;
 			}
-        
+
 			public function onRun() : void{
 				$url = "https://poggit.pmmp.io/releases.json?name=ClearLagg";
 				$response = @file_get_contents($url, false, stream_context_create([
 					'http' => [
 						'timeout' => 5,
 						'header' => "User-Agent: ClearLagg-UpdateChecker\r\n"
+					],
+					'ssl' => [
+						'verify_peer' => false,
+						'verify_peer_name' => false,
 					]
 				]));
 
-				if($response !== false){
+				if($response !== false) {
 					$releases = json_decode($response, true);
-					if(!empty($releases[0]['version'])){
-						$this->setResult([
-							'success' => true,
-							'latest' => $releases[0]['version'],
-							'current' => $this->currentVersion
-						]);
-						return;
+					if(is_array($releases) && count($releases) > 0) {
+						$latestRelease = null;
+						foreach($releases as $release) {
+							if(($release['is_obsolete'] ?? true) || ($release['is_pre_release'] ?? false)) {
+								continue;
+							}
+							if($latestRelease === null || version_compare($release['version'], $latestRelease['version'], '>')) {
+								$latestRelease = $release;
+							}
+						}
+
+						if($latestRelease === null && !empty($releases[0])) {
+							$latestRelease = $releases[0];
+						}
+
+						if($latestRelease !== null && isset($latestRelease['version'])) {
+							$this->setResult([
+								'success' => true,
+								'latest' => $latestRelease['version'],
+								'current' => $this->currentVersion,
+								'url' => $latestRelease['html_url'] ?? "https://poggit.pmmp.io/p/ClearLagg"
+							]);
+							return;
+						}
 					}
 				}
 				$this->setResult(['success' => false]);
 			}
 
-			public function onCompletion() : void{
+			public function onCompletion(): void {
 				$result = $this->getResult();
-				if(($result['success'] ?? false) && version_compare($result['latest'], $result['current'], '>')){
-					$server = \pocketmine\Server::getInstance();
-					$server->getLogger()->info("§e[ClearLagg] New version available: §f" . $result['latest'] . "§e(Current: §f" . $result['current'] . "§e)");
-					$server->getLogger()->info("§eDownload: §fhttps://poggit.pmmp.io/p/ClousClouds/ClearLagg");
+				if(($result['success'] ?? false)) {
+					$latestVersion = $result['latest'];
+					$currentVersion = $result['current'];
+					if(version_compare($latestVersion, $currentVersion, '>')) {
+						$server = Server::getInstance();
+						$server->getLogger()->info("§e[ClearLagg] New version available: §f" . $latestVersion . "§e (Current: §f" . $currentVersion . "§e)");
+						$server->getLogger()->info("§eDownload: §f" . ($result['url'] ?? "https://poggit.pmmp.io/p/ClearLagg"));
+					}
 				}
 			}
 		});
 	}
 
-	/**
-	 * Retrieves the ClearLaggManager instance.
-	 */
 	public function getClearLaggManager() : ClearLaggManager{
 		return $this->clearLaggManager;
 	}
 
-	/**
-	 * Retrieves the StatsManager instance.
-	 */
 	public function getStatsManager() : StatsManager{
 		return $this->statsManager;
 	}
