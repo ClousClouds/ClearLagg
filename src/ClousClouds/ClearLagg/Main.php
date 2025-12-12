@@ -105,15 +105,19 @@ class Main extends PluginBase{
 			}
 
 			public function onCompletion(): void {
+				$server = Server::getInstance();
 				$result = $this->getResult();
 				if(($result['success'] ?? false)) {
 					$latestVersion = $result['latest'];
 					$currentVersion = $result['current'];
 					if(version_compare($latestVersion, $currentVersion, '>')) {
-						$server = Server::getInstance();
 						$server->getLogger()->info("§e[ClearLagg] New version available: §f" . $latestVersion . "§e (Current: §f" . $currentVersion . "§e)");
-						$server->getLogger()->info("§eDownload: §f" . ($result['url'] ?? "https://poggit.pmmp.io/p/ClearLagg"));
+						$server->getLogger()->info("§eDownload: §f" . ($result['url'] ?? "https://poggit.pmmp.io/p/ClousClouds/ClearLagg"));
+					}else{
+						$server->getLogger()->info("§7[ClearLagg] Plugin is up to date.")
 					}
+				}else{
+					$server->getLogger()->info("§7[ClearLagg] Could not fetch update data.")
 				}
 			}
 		});
