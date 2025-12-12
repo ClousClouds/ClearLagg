@@ -73,24 +73,24 @@ class Main extends PluginBase{
 					]
 				]));
 
-				if($response !== false) {
+				if($response !== false){
 					$releases = json_decode($response, true);
-					if(is_array($releases) && count($releases) > 0) {
+					if(is_array($releases) && count($releases) > 0){
 						$latestRelease = null;
-						foreach($releases as $release) {
-							if(($release['is_obsolete'] ?? true) || ($release['is_pre_release'] ?? false)) {
+						foreach($releases as $release){
+							if(($release['is_obsolete'] ?? false) || ($release['is_pre_release'] ?? false)){
 								continue;
 							}
-							if($latestRelease === null || version_compare($release['version'], $latestRelease['version'], '>')) {
+							if($latestRelease === null || version_compare($release['version'], $latestRelease['version'], '>')){
 								$latestRelease = $release;
 							}
 						}
 
-						if($latestRelease === null && !empty($releases[0])) {
+						if($latestRelease === null && !empty($releases[0])){
 							$latestRelease = $releases[0];
 						}
 
-						if($latestRelease !== null && isset($latestRelease['version'])) {
+						if($latestRelease !== null && isset($latestRelease['version'])){
 							$this->setResult([
 								'success' => true,
 								'latest' => $latestRelease['version'],
@@ -104,13 +104,13 @@ class Main extends PluginBase{
 				$this->setResult(['success' => false]);
 			}
 
-			public function onCompletion(): void {
+			public function onCompletion() : void{
 				$server = Server::getInstance();
 				$result = $this->getResult();
-				if(($result['success'] ?? false)) {
+				if(($result['success'] ?? false)){
 					$latestVersion = $result['latest'];
 					$currentVersion = $result['current'];
-					if(version_compare($latestVersion, $currentVersion, '>')) {
+					if(version_compare($latestVersion, $currentVersion, '>')){
 						$server->getLogger()->info("§e[ClearLagg] New version available: §f" . $latestVersion . "§e (Current: §f" . $currentVersion . "§e)");
 						$server->getLogger()->info("§eDownload: §f" . ($result['url'] ?? "https://poggit.pmmp.io/p/ClousClouds/ClearLagg"));
 					}else{
