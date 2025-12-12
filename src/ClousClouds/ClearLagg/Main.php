@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace ClousClouds\ClearLagg;
 
+use ClousClouds\ClearLagg\command\ClearLaggCommand;
 use ClousClouds\ClearLagg\manager\ClearLaggManager;
 use ClousClouds\ClearLagg\manager\StatsManager;
 use pocketmine\plugin\PluginBase;
@@ -44,6 +45,8 @@ class Main extends PluginBase{
 				$this
 			);
 		}
+		$this->getServer()->getCommandMap()->register("clearlagg", new ClearLaggCommand($this));
+		
 	}
 
 	private function checkUpdate() : void{
