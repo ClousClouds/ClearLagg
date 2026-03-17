@@ -4,7 +4,7 @@
  * This file is part of ClearLagg
  *    ___ _              _
  *   / __| |___ __ _ _ _| |   __ _ __ _ __ _
- *  |(__| / -_) _` | '_| |__/ _` / _` / _` |
+ *  | (__| / -_) _` | '_| |__/ _` / _` / _` |
  *   \___|_\___\__,_|_| |____\__,_\__, \__, |
  *                                 |___/|___/
  *
@@ -22,9 +22,14 @@ use ClousClouds\ClearLagg\command\ClearLaggCommand;
 use ClousClouds\ClearLagg\manager\ClearLaggManager;
 use ClousClouds\ClearLagg\manager\StatsManager;
 use pocketmine\plugin\PluginBase;
-use pocketmine\scheduler\TaskHandler;
 use pocketmine\Server;
 use function class_exists;
+use function count;
+use function file_get_contents;
+use function is_array;
+use function json_decode;
+use function stream_context_create;
+use function version_compare;
 
 class Main extends PluginBase{
 
@@ -47,7 +52,7 @@ class Main extends PluginBase{
 			);
 		}
 		$this->getServer()->getCommandMap()->register("clearlagg", new ClearLaggCommand($this));
-		
+
 	}
 
 	private function checkUpdate() : void{
